@@ -90,6 +90,10 @@
     daemon-reload: yes
     state: restarted
 
+- name: "Set app_health_url dynamically"
+  set_fact:
+    app_health_url: "http://{{ hostvars[inventory_hostname].ansible_default_ipv4.address }}:8080/actuator/health"
+
 - name: "Debug app_name and app_health_url"
   debug:
     msg: "app_name: {{ app_name }} - app_health_url: {{ app_health_url }}"
@@ -102,5 +106,6 @@
   retries: 25
   delay: 10
   when: app_health_url is defined and app_health_url != ""
+
 
 
