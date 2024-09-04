@@ -58,7 +58,7 @@
 - name: Download application jar from AWS S3 bucket
   aws_s3:
     bucket: "{{ aws_packages_bucket }}"
-    object: "/{{ project_name }}/{{ app_layer }}/{{ app_name }}/{{ app_jar }}"
+    object: "/{{ app_layer }}/{{ app_name }}/{{ app_jar }}"
     dest: "{{ app_folder }}/{{ app_jar }}"
     mode: get
     overwrite: different
