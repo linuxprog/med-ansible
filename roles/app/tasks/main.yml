@@ -80,8 +80,8 @@
 - name: Install as service
   include: service.yml
 
-- name: Retrieve SSM parameters and store in /etc/environment on EC2 instance
-  include: ssm_params.yml
+#- name: Retrieve SSM parameters and store in /etc/environment on EC2 instance
+#  include: ssm_params.yml
 
 - name: "Restart application"
   systemd:
