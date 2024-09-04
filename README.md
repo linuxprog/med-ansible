@@ -16,13 +16,7 @@ Clone this repo into your roles directory:
 Usage
 -----
 
-
-And add it to your play's roles:
-
-    - hosts: ...
-      roles:
-        - app
-        - ...
+    ansible-playbook playbooks/site.yml -e @group_vars/dev --tags application
 
 You can also use the role as a playbook. You will be asked which hosts to provision, and you can further configure the play by using `--extra-vars`.
 
