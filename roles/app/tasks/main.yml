@@ -90,10 +90,11 @@
     daemon-reload: yes
     state: restarted
 
+- name: "Debug app_name and app_health_url"
+  debug:
+    msg: "app_name: {{ app_name }} - app_health_url: {{ app_health_url }}"
 
 - name: "Wait until {{ app_name }} becomes active {{ app_health_url }}"
-  debug:
-    msg: "app name : {{ app_name }} - app_health_url: {{ app_health_url }}"
   ansible.builtin.uri:
     url: "{{ app_health_url }}"
   register: app_status
