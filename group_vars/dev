@@ -1,4 +1,4 @@
-project_name : medapp
+project_name : hotelbooking-back
 app_folder : /opt/{{ app_name }}
 app_layer : micro-services
 ssm_parameter_path: /lbv-{{ project_name }}-dev/parameters/{{ app_name }}
