@@ -3,8 +3,6 @@ project_name : med-app-dev
 app_layer : micro-services
 app_name : hotelbooking-back
 app_version : 1.0
-
-
 app_jar : {{ app_name }}-{{ app_version }}.jar
 app_folder : /opt/{{ app_name }}
 ssm_parameter_path : /{{ project_name }}-dev/parameters/{{ app_name }}
