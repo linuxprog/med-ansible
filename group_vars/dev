@@ -1,8 +1,13 @@
 aws_packages_bucket : med-app-dev
 project_name : med-app-dev
 app_layer : micro-services
+app_name : hotelbooking-back
+app_version : 1.0
+
+
+app_jar : {{ app_name }}-{{ app_version }}.jar
 app_folder : /opt/{{ app_name }}
 ssm_parameter_path : /{{ project_name }}-dev/parameters/{{ app_name }}
 java_install : true
 java_cmd : /usr/bin/java -jar {{ app_folder }}/{{ app_jar }}
-app_health_url : http://10.0.3.139:8080/actuator/health
+app_health_url : http://{{VM_IP}}:8080/actuator/health
