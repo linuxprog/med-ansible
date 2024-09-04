@@ -1,0 +1,9 @@
+- name: Retrieve parameter content from AWS SSM Parameter Store
+  shell: aws ssm get-parameters --names "{{ ssm_parameter_path }}" --region eu-west-2 --with-decryption --query "Parameters[*].Value"
+  register: ssm_parameter
+
+- name: Store parameter content in /etc/environment
+  copy:
+    content: "{{ ssm_parameter.stdout | join('') | replace('[\n    \"','') | replace(']','')  | replace('\\n', '\n') | replace('\"', '') }}"
+    dest: "/etc/environment"
+  when: ssm_parameter.stdout is defined and ssm_parameter.stdout != ""

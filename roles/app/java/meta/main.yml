@@ -1,0 +1,27 @@
+---
+galaxy_info:
+  author: Mohamed
+  description: Deploy springboot applications
+  license: "license (BSD, MIT)"
+  min_ansible_version: 2.2.0
+
+  platforms:
+    - name: EL
+      versions:
+        - 6
+        - 7
+    - name: Debian
+      versions:
+        - all
+    - name: Ubuntu
+      versions:
+        - all
+    - name: Amazon Linux 2
+      versions:
+        - all
+
+  galaxy_tags:
+    - spring
+    - springboot
+
+dependencies: []

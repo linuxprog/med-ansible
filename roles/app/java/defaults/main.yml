@@ -1,0 +1,12 @@
+---
+
+# app folder
+app_folder: /opt/{{ app_name }}
+
+# linux user to start the service
+app_user: springboot
+
+# linux group to start the service
+app_group: springboot
+
+

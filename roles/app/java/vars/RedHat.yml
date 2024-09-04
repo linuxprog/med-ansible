@@ -1,0 +1,6 @@
+---
+# java: "{{ java | default('java-1.8.0-openjdk.x86_64') }}"
+# JRE
+java: java-17-amazon-corretto-headless
+# JDK
+# java: java-17-amazon-corretto-devel

@@ -1,0 +1,20 @@
+---
+
+- name: Install Java
+  include: java.yml
+  when: java_install
+
+- name: Install Python3
+  become: yes
+  ansible.builtin.yum:
+    name:
+      - python3
+      - python3-pip
+    state: present
+
+- name: Install boto3 and botocore with pip3 module
+  pip:
+    name:
+      - boto3
+      - botocore
+    executable: pip3

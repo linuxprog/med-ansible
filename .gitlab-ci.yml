@@ -1,0 +1,32 @@
+default:
+  tags:
+    - negociation
+
+include:
+  - project: software-factory/automation/pipeline-templates/ci
+    file:
+      - /ansible/inventory-configuration.yml
+
+stages:
+  - install
+
+variables:
+  ANSIBLE_JAVA_TEMPLATE_URL: https://gitlab-ci-token:${CI_JOB_TOKEN}@${CI_SERVER_HOST}/software-factory/automation/ansible-roles/java.git
+  ANSIBLE_TEMPLATE_BRANCH: feat/role-with-ssm-params
+  KEY_NAME: playbook
+
+
+install:
+  extends: .template:ansible:inventory:dynamique
+  stage: install
+  rules:
+    - if: '$ENV != null && $APP_JAR != null && $APP_NAME != null'
+      when: on_success
+  variables:
+    INSTANCE_FILTRES: "Name=tag:Environment,Values=$CI_COMMIT_BRANCH Name=tag:Component,Values=backend"
+  script:
+    - git clone -b $ANSIBLE_TEMPLATE_BRANCH $ANSIBLE_JAVA_TEMPLATE_URL roles/app
+    - ansible-playbook playbooks/site.yml -e app_name=$APP_NAME -e app_jar=$APP_JAR  -e @group_vars/$ENV   --tags application
+  environment:
+    name: $CI_COMMIT_BRANCH/$APP_JAR
+

@@ -1,0 +1,8 @@
+.idea
+molecule/default/.cache
+molecule/**/.molecule
+molecule/**/__pycache__
+molecule/**/__init__.py
+molecule/**/__init__.pyc
+molecule/**/.pytest_cache
+.venv

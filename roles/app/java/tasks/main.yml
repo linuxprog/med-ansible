@@ -1,0 +1,103 @@
+---
+- name: Check required variables
+  assert:
+    that:
+      - project_name is defined
+      - app_name is defined
+      - app_folder is defined
+      - app_layer is defined
+      - app_jar is defined
+      - aws_packages_bucket is defined
+      - ssm_parameter_path is defined
+      - java_install is defined
+      - java_cmd is defined
+    fail_msg: "One or more required variables are not defined"
+
+
+- name: os-specific vars
+  include_vars: "{{ ansible_os_family }}.yml"
+
+
+- name: "Install Requirements"
+  include: reqs.yml
+
+
+- name: "Create group for app"
+  group:
+    name: "{{ app_group }}"
+    state: present
+
+- name: "Create user for app"
+  user:
+    name: "{{ app_user }}"
+    group: "{{ app_group }}"
+    state: present
+
+- name: "Create deploy folder if not exists"
+  file:
+    path: "{{ app_folder }}"
+    state: directory
+    owner: "{{ app_user }}"
+    group: "{{ app_group }}"
+
+
+- name: Find all JAR files in the deploy directory
+  find:
+    paths: "{{ app_folder }}"
+    patterns: "*.jar"
+    file_type: file
+  register: jar_files_to_remove
+
+- name: Remove the found JAR files
+  file:
+    path: "{{ item.path }}"
+    state: absent
+  loop: "{{ jar_files_to_remove.files }}"
+
+
+- name: Download application jar from AWS S3 bucket
+  aws_s3:
+    bucket: "{{ aws_packages_bucket }}"
+    object: "/{{ project_name }}/{{ app_layer }}/{{ app_name }}/{{ app_jar }}"
+    dest: "{{ app_folder }}/{{ app_jar }}"
+    mode: get
+    overwrite: different
+  vars:
+    ansible_python_interpreter: /usr/bin/python3
+
+
+# - name: Download application config from AWS S3 bucket
+#   aws_s3:
+#     bucket: "{{ aws_packages_bucket }}"
+#     object: "/{{ project_name }}/{{ app_layer }}/{{ app_name }}/{{ app_config }}.tpl"
+#     dest: "{{ app_folder }}/{{ app_config }}"
+#     mode: get
+#     overwrite: different
+#   vars:
+#     ansible_python_interpreter: /usr/bin/python3
+
+
+- name: Install as service
+  include: service.yml
+
+- name: Retrieve SSM parameters and store in /etc/environment on EC2 instance
+  include: ssm_params.yml
+
+- name: "Restart application"
+  systemd:
+    name: "{{ app_name }}"
+    enabled: yes
+    daemon-reload: yes
+    state: restarted
+
+
+- name: "Wait until {{ app_name }} becomes active {{ app_health_url }}"
+  ansible.builtin.uri:
+    url: "{{ app_health_url }}"
+  register: app_status
+  until: app_status.status == 200
+  retries: 25
+  delay: 10
+  when: app_health_url is defined and app_health_url != ""
+
+

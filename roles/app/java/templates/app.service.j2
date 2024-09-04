@@ -1,0 +1,18 @@
+[Unit]
+Description={{ app_name }}
+After=syslog.target
+StartLimitInterval=200
+StartLimitBurst=5
+
+[Service]
+Type=simple
+EnvironmentFile=/etc/environment
+User={{ app_user }}
+WorkingDirectory={{ app_folder }}
+ExecStart={{ java_cmd }}
+SuccessExitStatus=143
+Restart=on-failure
+RestartSec=60s
+
+[Install]
+WantedBy=multi-user.target
